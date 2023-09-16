@@ -62,8 +62,14 @@ void ThreadPool::threadFunc(int qindex) {
 
 		if (!task_to_do)
 			return;
-			
-		task_to_do();// выполняем задачу
+		//Здесь должна быть обработка исключения 
+		try{
+			task_to_do();// выполняем задачу
+		}
+		catch (const std::exception& ex) {
+			std::cout << "Tread " << std::this_thread::get_id() << " failed to execute task with error:" << ex.what() << std::endl;
+		}
+		
 		_chld_cnt--;
 		if (!_chld_cnt.load())
 			_ParentTaskPrmPtr->set_value(true);
